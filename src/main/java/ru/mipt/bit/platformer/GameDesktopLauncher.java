@@ -13,7 +13,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.graphics.TankGraphics;
 import ru.mipt.bit.platformer.graphics.TreeGraphics;
-import ru.mipt.bit.platformer.input.KeyboardInput;
+import ru.mipt.bit.platformer.input.GdxKeyboard;
+import ru.mipt.bit.platformer.input.KeyboardController;
+import ru.mipt.bit.platformer.input.PlayerControls;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.LevelFactory;
 import ru.mipt.bit.platformer.util.TileMovement;
@@ -30,7 +32,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private MapRenderer levelMapRenderer;
 
     private Level level;
-    private KeyboardInput keyboardInput;
+    private KeyboardController controller;
 
     private TankGraphics tankGraphics;
     private TreeGraphics treeGraphics;
@@ -46,7 +48,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         TileMovement tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
         level = new LevelFactory().createDefaultLevel();
-        keyboardInput = new KeyboardInput(Gdx.input);
+        controller = new PlayerControls(level).createController(new GdxKeyboard(Gdx.input));
 
         tankGraphics = new TankGraphics(level.getPlayerTank(), tileMovement, "images/tank_blue.png");
         treeGraphics = new TreeGraphics(level.getTrees().get(0), groundLayer, "images/greenTree.png");
@@ -61,7 +63,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         // get time passed since the last render
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        keyboardInput.pressedDirection().ifPresent(level::movePlayerTank);
+        controller.handleInput();
         level.update(deltaTime);
 
         // render each tile of the level
