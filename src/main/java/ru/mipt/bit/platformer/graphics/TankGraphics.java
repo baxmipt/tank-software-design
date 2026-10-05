@@ -17,7 +17,6 @@ public class TankGraphics extends ObjectGraphics {
 
     @Override
     public void render(Batch batch) {
-        // calculate interpolated tank screen coordinates
         tileMovement.moveRectangleBetweenTileCenters(
                 rectangle, tank.getCoordinates(), tank.getDestinationCoordinates(), tank.getMovementProgress());
         draw(batch, tank.getRotation());

@@ -11,9 +11,7 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled
 
 public abstract class ObjectGraphics implements Disposable {
 
-    // Texture decodes an image file and loads it into GPU memory, it represents a native resource
     private final Texture texture;
-    // TextureRegion represents Texture portion, there may be many TextureRegion instances of the same Texture
     private final TextureRegion graphics;
 
     protected final Rectangle rectangle;

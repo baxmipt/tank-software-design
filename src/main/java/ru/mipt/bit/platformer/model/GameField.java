@@ -4,15 +4,16 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.List;
 
-public class GameField {
+public class GameField implements CollisionDetector {
 
-    private final List<Tree> trees;
+    private final List<Obstacle> obstacles;
 
-    public GameField(List<Tree> trees) {
-        this.trees = List.copyOf(trees);
+    public GameField(List<? extends Obstacle> obstacles) {
+        this.obstacles = List.copyOf(obstacles);
     }
 
+    @Override
     public boolean isFree(GridPoint2 tile) {
-        return trees.stream().noneMatch(tree -> tree.occupies(tile));
+        return obstacles.stream().noneMatch(obstacle -> obstacle.occupies(tile));
     }
 }

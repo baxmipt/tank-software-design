@@ -2,8 +2,8 @@ package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class Tank {
 
@@ -11,9 +11,7 @@ public class Tank {
 
     private final float movementDuration;
 
-    // tank current position coordinates on level 10x8 grid (e.g. x=0, y=1)
     private final GridPoint2 coordinates;
-    // which tile the tank wants to go next
     private final GridPoint2 destinationCoordinates;
     private float movementProgress = MOVEMENT_COMPLETED;
     private float rotation;
@@ -25,22 +23,21 @@ public class Tank {
         this.movementDuration = movementDuration;
     }
 
-    public void move(Direction direction, GameField field) {
+    public void move(Direction direction, CollisionDetector collisionDetector) {
         if (isMoving()) {
             return;
         }
         rotation = direction.getRotation();
         GridPoint2 nextCoordinates = direction.nextCoordinates(coordinates);
-        if (field.isFree(nextCoordinates)) {
+        if (collisionDetector.isFree(nextCoordinates)) {
             destinationCoordinates.set(nextCoordinates);
             movementProgress = 0f;
         }
     }
 
     public void update(float deltaTime) {
-        movementProgress = continueProgress(movementProgress, deltaTime, movementDuration);
+        movementProgress = clamp(movementProgress + deltaTime / movementDuration, 0f, MOVEMENT_COMPLETED);
         if (!isMoving()) {
-            // record that the tank has reached its destination
             coordinates.set(destinationCoordinates);
         }
     }
