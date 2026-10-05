@@ -4,8 +4,6 @@ import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,8 +12,8 @@ class TankTest {
 
     private static final float MOVEMENT_DURATION = 0.4f;
 
-    private final GameField emptyField = new GameField(List.of());
-    private final GameField fieldWithTreeAbove = new GameField(List.of(new Tree(new GridPoint2(1, 2))));
+    private final CollisionDetector emptyField = tile -> true;
+    private final CollisionDetector fieldWithObstacleAbove = tile -> !tile.equals(new GridPoint2(1, 2));
 
     private Tank tank;
 
@@ -62,7 +60,7 @@ class TankTest {
 
     @Test
     void shouldNotMoveIntoOccupiedTile() {
-        tank.move(Direction.UP, fieldWithTreeAbove);
+        tank.move(Direction.UP, fieldWithObstacleAbove);
         tank.update(MOVEMENT_DURATION);
 
         assertEquals(new GridPoint2(1, 1), tank.getCoordinates());
@@ -70,7 +68,7 @@ class TankTest {
 
     @Test
     void shouldTurnTowardsOccupiedTile() {
-        tank.move(Direction.UP, fieldWithTreeAbove);
+        tank.move(Direction.UP, fieldWithObstacleAbove);
 
         assertEquals(Direction.UP.getRotation(), tank.getRotation());
     }
