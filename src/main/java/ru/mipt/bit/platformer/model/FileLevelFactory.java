@@ -53,7 +53,7 @@ public class FileLevelFactory implements LevelFactory {
         if (playerTank == null) {
             throw new IllegalArgumentException("Level has no player tank");
         }
-        return new Level(playerTank, trees);
+        return new Level(rows.get(0).length(), rows.size(), playerTank, List.of(), trees);
     }
 
     private List<String> readRows() {

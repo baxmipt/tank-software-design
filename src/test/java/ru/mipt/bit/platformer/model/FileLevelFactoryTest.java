@@ -76,6 +76,30 @@ class FileLevelFactoryTest {
     }
 
     @Test
+    void shouldCreateLevelWithoutAiTanks() throws IOException {
+        Level level = createLevel("_X");
+
+        assertTrue(level.getAiTanks().isEmpty());
+    }
+
+    @Test
+    void shouldKeepPlayerTankInsideLevel() throws IOException {
+        Level level = createLevel(
+                "X_",
+                "__");
+        Tank tank = level.getPlayerTank();
+
+        level.move(tank, Direction.LEFT);
+        level.update(MOVEMENT_DURATION);
+        level.move(tank, Direction.UP);
+        level.update(MOVEMENT_DURATION);
+        level.move(tank, Direction.UP);
+        level.update(MOVEMENT_DURATION);
+
+        assertEquals(new GridPoint2(0, 1), tank.getCoordinates());
+    }
+
+    @Test
     void shouldCreateLevelWithoutTrees() throws IOException {
         Level level = createLevel("_X");
 

@@ -36,7 +36,7 @@ class PlayerControlsTest {
     @MethodSource("keysAndDestinations")
     void shouldMovePlayerTankWithPressedKey(int pressedKey, GridPoint2 expectedCoordinates) {
         Tank tank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, MOVEMENT_DURATION);
-        Level level = new Level(tank, List.of());
+        Level level = new Level(5, 5, tank, List.of(), List.of());
         KeyboardController controller = new PlayerControls(level).createController(key -> key == pressedKey);
 
         controller.handleInput();

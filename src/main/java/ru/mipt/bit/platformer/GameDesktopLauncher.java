@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import ru.mipt.bit.platformer.ai.AiController;
+import ru.mipt.bit.platformer.ai.RandomMovementStrategy;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.graphics.LevelGraphicsFactory;
 import ru.mipt.bit.platformer.input.GdxKeyboard;
@@ -27,12 +29,15 @@ public class GameDesktopLauncher implements ApplicationListener {
     private static final int LEVEL_WIDTH = 10;
     private static final int LEVEL_HEIGHT = 8;
     private static final int TREE_COUNT = 12;
+    private static final int AI_TANK_COUNT = 4;
     private static final float TANK_MOVEMENT_DURATION = 0.4f;
 
     private final LevelFactory levelFactory;
+    private final Random random = new Random();
 
     private Level level;
     private KeyboardController controller;
+    private AiController aiController;
     private GameGraphics graphics;
 
     public GameDesktopLauncher(LevelFactory levelFactory) {
@@ -43,12 +48,16 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void create() {
         level = levelFactory.create();
         controller = new PlayerControls(level).createController(new GdxKeyboard(Gdx.input));
+        aiController = new AiController(level.getAiTanks().stream()
+                .map(tank -> new RandomMovementStrategy(level, tank, random))
+                .toList());
         graphics = new LevelGraphicsFactory(LEVEL_MAP_PATH, TANK_TEXTURE_PATH, TREE_TEXTURE_PATH).create(level);
     }
 
     @Override
     public void render() {
         controller.handleInput();
+        aiController.handleAi();
         level.update(Gdx.graphics.getDeltaTime());
         graphics.render();
     }
@@ -80,6 +89,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         if (args.length > 0) {
             return new FileLevelFactory(Path.of(args[0]), TANK_MOVEMENT_DURATION);
         }
-        return new RandomLevelFactory(LEVEL_WIDTH, LEVEL_HEIGHT, TREE_COUNT, TANK_MOVEMENT_DURATION, new Random());
+        return new RandomLevelFactory(
+                LEVEL_WIDTH, LEVEL_HEIGHT, TREE_COUNT, AI_TANK_COUNT, TANK_MOVEMENT_DURATION, new Random());
     }
 }

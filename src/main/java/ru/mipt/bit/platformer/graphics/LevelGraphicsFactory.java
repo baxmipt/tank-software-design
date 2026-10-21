@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.model.Level;
+import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.model.Tree;
 import ru.mipt.bit.platformer.util.TileMovement;
 
@@ -29,6 +30,9 @@ public class LevelGraphicsFactory {
 
         GameGraphics graphics = new GameGraphics(levelMap);
         graphics.add(new TankGraphics(level.getPlayerTank(), tileMovement, tankTexturePath));
+        for (Tank tank : level.getAiTanks()) {
+            graphics.add(new TankGraphics(tank, tileMovement, tankTexturePath));
+        }
         for (Tree tree : level.getTrees()) {
             graphics.add(new TreeGraphics(tree, groundLayer, treeTexturePath));
         }
