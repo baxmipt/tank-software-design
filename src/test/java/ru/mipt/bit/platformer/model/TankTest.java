@@ -81,4 +81,28 @@ class TankTest {
         assertEquals(new GridPoint2(1, 2), tank.getDestinationCoordinates());
         assertEquals(Direction.UP.getRotation(), tank.getRotation());
     }
+
+    @Test
+    void shouldOccupyOnlyItsTileWhenStanding() {
+        assertTrue(tank.occupies(new GridPoint2(1, 1)));
+        assertFalse(tank.occupies(new GridPoint2(1, 2)));
+    }
+
+    @Test
+    void shouldOccupyBothTilesWhenMoving() {
+        tank.move(Direction.UP, emptyField);
+
+        assertTrue(tank.occupies(new GridPoint2(1, 1)));
+        assertTrue(tank.occupies(new GridPoint2(1, 2)));
+        assertFalse(tank.occupies(new GridPoint2(1, 0)));
+    }
+
+    @Test
+    void shouldOccupyOnlyDestinationAfterMovement() {
+        tank.move(Direction.UP, emptyField);
+        tank.update(MOVEMENT_DURATION);
+
+        assertFalse(tank.occupies(new GridPoint2(1, 1)));
+        assertTrue(tank.occupies(new GridPoint2(1, 2)));
+    }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
-public class Tank {
+public class Tank implements Obstacle {
 
     private static final float MOVEMENT_COMPLETED = 1f;
 
@@ -40,6 +40,11 @@ public class Tank {
         if (!isMoving()) {
             coordinates.set(destinationCoordinates);
         }
+    }
+
+    @Override
+    public boolean occupies(GridPoint2 tile) {
+        return coordinates.equals(tile) || destinationCoordinates.equals(tile);
     }
 
     public boolean isMoving() {
