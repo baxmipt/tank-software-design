@@ -1,33 +1,91 @@
 package ru.mipt.bit.platformer.model;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
 
+    private final int width;
+    private final int height;
     private final Tank playerTank;
-    private final List<Tank> aiTanks;
-    private final List<Tree> trees;
-    private final GameField field;
+    private final List<GameObject> objects = new ArrayList<>();
+    private final List<LevelListener> listeners = new ArrayList<>();
 
     public Level(int width, int height, Tank playerTank, List<Tank> aiTanks, List<Tree> trees) {
+        this.width = width;
+        this.height = height;
         this.playerTank = playerTank;
-        this.aiTanks = List.copyOf(aiTanks);
-        this.trees = List.copyOf(trees);
-
-        List<Obstacle> obstacles = new ArrayList<>(this.trees);
-        obstacles.add(playerTank);
-        obstacles.addAll(this.aiTanks);
-        this.field = new GameField(width, height, obstacles);
+        objects.add(playerTank);
+        objects.addAll(aiTanks);
+        objects.addAll(trees);
     }
 
     public void move(Tank tank, Direction direction) {
-        tank.move(direction, field);
+        if (contains(tank)) {
+            tank.move(direction, new GameField(width, height, objects.stream()
+                    .filter(object -> !(object instanceof Bullet)).toList()));
+        }
+    }
+
+    public void shoot(Tank tank) {
+        if (contains(tank)) {
+            tank.shoot(this);
+        }
+    }
+
+    public void add(GameObject object) {
+        if (!contains(object)) {
+            objects.add(object);
+            List.copyOf(listeners).forEach(listener -> listener.objectAdded(object));
+        }
+    }
+
+    public void remove(GameObject object) {
+        if (objects.remove(object)) {
+            List.copyOf(listeners).forEach(listener -> listener.objectRemoved(object));
+        }
+    }
+
+    public void subscribe(LevelListener listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+            List.copyOf(objects).forEach(listener::objectAdded);
+        }
+    }
+
+    public void unsubscribe(LevelListener listener) {
+        listeners.remove(listener);
+    }
+
+    public boolean contains(GameObject object) {
+        return objects.contains(object);
+    }
+
+    public boolean collide(Bullet bullet) {
+        GridPoint2 tile = bullet.getCoordinates();
+        if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= height) {
+            remove(bullet);
+            return true;
+        }
+        List<GameObject> targets = objects.stream()
+                .filter(object -> object != bullet && object != bullet.getOwner() && object.occupies(tile))
+                .toList();
+        if (targets.isEmpty()) {
+            return false;
+        }
+        remove(bullet);
+        targets.forEach(target -> target.hit(bullet.getDamage(), this));
+        return true;
     }
 
     public void update(float deltaTime) {
-        playerTank.update(deltaTime);
-        aiTanks.forEach(tank -> tank.update(deltaTime));
+        for (GameObject object : List.copyOf(objects)) {
+            if (contains(object)) {
+                object.update(deltaTime, this);
+            }
+        }
     }
 
     public Tank getPlayerTank() {
@@ -35,10 +93,15 @@ public class Level {
     }
 
     public List<Tank> getAiTanks() {
-        return aiTanks;
+        return objects.stream().filter(object -> object instanceof Tank && object != playerTank)
+                .map(object -> (Tank) object).toList();
     }
 
     public List<Tree> getTrees() {
-        return trees;
+        return objects.stream().filter(Tree.class::isInstance).map(Tree.class::cast).toList();
+    }
+
+    public List<Bullet> getBullets() {
+        return objects.stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).toList();
     }
 }

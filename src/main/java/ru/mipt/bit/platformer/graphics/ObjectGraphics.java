@@ -17,7 +17,11 @@ public abstract class ObjectGraphics implements Disposable {
     protected final Rectangle rectangle;
 
     protected ObjectGraphics(String texturePath) {
-        this.texture = new Texture(texturePath);
+        this(new Texture(texturePath));
+    }
+
+    protected ObjectGraphics(Texture texture) {
+        this.texture = texture;
         this.graphics = new TextureRegion(texture);
         this.rectangle = createBoundingRectangle(graphics);
     }

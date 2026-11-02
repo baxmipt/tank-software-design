@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.ai;
 
 import ru.mipt.bit.platformer.input.Command;
 import ru.mipt.bit.platformer.input.MoveCommand;
+import ru.mipt.bit.platformer.input.ShootCommand;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.Tank;
@@ -24,6 +25,10 @@ public class RandomMovementStrategy implements MovementStrategy {
 
     @Override
     public Command nextCommand() {
-        return new MoveCommand(level, tank, DIRECTIONS[random.nextInt(DIRECTIONS.length)]);
+        int action = random.nextInt(DIRECTIONS.length + 1);
+        if (action == DIRECTIONS.length) {
+            return new ShootCommand(level, tank);
+        }
+        return new MoveCommand(level, tank, DIRECTIONS[action]);
     }
 }

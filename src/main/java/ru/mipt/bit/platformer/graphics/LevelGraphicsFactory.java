@@ -5,8 +5,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.model.Level;
-import ru.mipt.bit.platformer.model.Tank;
-import ru.mipt.bit.platformer.model.Tree;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
@@ -28,14 +26,10 @@ public class LevelGraphicsFactory {
         TiledMapTileLayer groundLayer = getSingleLayer(levelMap);
         TileMovement tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
-        GameGraphics graphics = new GameGraphics(levelMap);
-        graphics.add(new TankGraphics(level.getPlayerTank(), tileMovement, tankTexturePath));
-        for (Tank tank : level.getAiTanks()) {
-            graphics.add(new TankGraphics(tank, tileMovement, tankTexturePath));
-        }
-        for (Tree tree : level.getTrees()) {
-            graphics.add(new TreeGraphics(tree, groundLayer, treeTexturePath));
-        }
+        ObjectGraphicsFactory objectGraphicsFactory = new ObjectGraphicsFactory(
+                tileMovement, groundLayer, tankTexturePath, treeTexturePath);
+        GameGraphics graphics = new GameGraphics(levelMap, level, objectGraphicsFactory);
+        level.subscribe(graphics);
         return graphics;
     }
 }

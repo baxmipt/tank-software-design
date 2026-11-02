@@ -7,27 +7,44 @@ import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Disposable;
 
-import java.util.ArrayList;
-import java.util.List;
+import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.model.Level;
+import ru.mipt.bit.platformer.model.LevelListener;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 
-public class GameGraphics implements Disposable {
+public class GameGraphics implements Disposable, LevelListener {
 
     private final Batch batch;
     private final TiledMap levelMap;
     private final MapRenderer levelMapRenderer;
-    private final List<ObjectGraphics> objects = new ArrayList<>();
+    private final Map<GameObject, ObjectGraphics> objects = new LinkedHashMap<>();
+    private final Level level;
+    private final ObjectGraphicsFactory objectGraphicsFactory;
 
-    public GameGraphics(TiledMap levelMap) {
+    public GameGraphics(TiledMap levelMap, Level level, ObjectGraphicsFactory objectGraphicsFactory) {
+        this.level = level;
+        this.objectGraphicsFactory = objectGraphicsFactory;
         this.batch = new SpriteBatch();
         this.levelMap = levelMap;
         this.levelMapRenderer = createSingleLayerMapRenderer(levelMap, batch);
     }
 
-    public void add(ObjectGraphics object) {
-        objects.add(object);
+    @Override
+    public void objectAdded(GameObject object) {
+        objects.put(object, objectGraphicsFactory.create(object));
+    }
+
+    @Override
+    public void objectRemoved(GameObject object) {
+        ObjectGraphics graphics = objects.remove(object);
+        if (graphics != null) {
+            graphics.dispose();
+        }
     }
 
     public void render() {
@@ -37,7 +54,7 @@ public class GameGraphics implements Disposable {
         levelMapRenderer.render();
 
         batch.begin();
-        for (ObjectGraphics object : objects) {
+        for (ObjectGraphics object : objects.values()) {
             object.render(batch);
         }
         batch.end();
@@ -45,9 +62,11 @@ public class GameGraphics implements Disposable {
 
     @Override
     public void dispose() {
-        for (ObjectGraphics object : objects) {
+        level.unsubscribe(this);
+        for (ObjectGraphics object : objects.values()) {
             object.dispose();
         }
+        objects.clear();
         levelMap.dispose();
         batch.dispose();
     }
