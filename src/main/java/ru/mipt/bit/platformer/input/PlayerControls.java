@@ -20,6 +20,7 @@ public class PlayerControls {
         controller.bind(new MoveCommand(level, tank, Direction.LEFT), Keys.LEFT, Keys.A);
         controller.bind(new MoveCommand(level, tank, Direction.DOWN), Keys.DOWN, Keys.S);
         controller.bind(new MoveCommand(level, tank, Direction.RIGHT), Keys.RIGHT, Keys.D);
+        controller.bind(new ShootCommand(level, tank), Keys.SPACE);
         return controller;
     }
 }

@@ -42,7 +42,9 @@ class RandomMovementStrategyTest {
         for (int i = 0; i < 50; i++) {
             Game game = new Game();
             new RandomMovementStrategy(game.level, game.tank, random).nextCommand().execute();
-            destinations.add(game.tank.getDestinationCoordinates());
+            if (game.level.getBullets().isEmpty()) {
+                destinations.add(game.tank.getDestinationCoordinates());
+            }
         }
 
         assertEquals(Set.of(
@@ -50,6 +52,17 @@ class RandomMovementStrategyTest {
                 new GridPoint2(5, 4),
                 new GridPoint2(4, 5),
                 new GridPoint2(6, 5)), destinations);
+    }
+
+    @Test
+    void shouldChooseShooting() {
+        Game game = new Game();
+        Random random = new Random(1);
+        for (int i = 0; i < 50; i++) {
+            new RandomMovementStrategy(game.level, game.tank, random).nextCommand().execute();
+        }
+
+        assertEquals(1, game.level.getBullets().size());
     }
 
     @Test

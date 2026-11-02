@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.input;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class KeyboardController {
@@ -19,10 +20,12 @@ public class KeyboardController {
     }
 
     public void handleInput() {
-        for (Map.Entry<Integer, Command> binding : commands.entrySet()) {
-            if (keyboard.isPressed(binding.getKey())) {
-                binding.getValue().execute();
-            }
-        }
+        getCommands().forEach(Command::execute);
+    }
+
+    public List<Command> getCommands() {
+        return commands.entrySet().stream()
+                .filter(binding -> keyboard.isPressed(binding.getKey()))
+                .map(Map.Entry::getValue).distinct().toList();
     }
 }

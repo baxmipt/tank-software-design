@@ -8,6 +8,7 @@ import ru.mipt.bit.platformer.ai.AiController;
 import ru.mipt.bit.platformer.ai.RandomMovementStrategy;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.graphics.LevelGraphicsFactory;
+import ru.mipt.bit.platformer.input.Command;
 import ru.mipt.bit.platformer.input.GdxKeyboard;
 import ru.mipt.bit.platformer.input.KeyboardController;
 import ru.mipt.bit.platformer.input.PlayerControls;
@@ -17,6 +18,8 @@ import ru.mipt.bit.platformer.model.LevelFactory;
 import ru.mipt.bit.platformer.model.RandomLevelFactory;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameDesktopLauncher implements ApplicationListener {
@@ -56,8 +59,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void render() {
-        controller.handleInput();
-        aiController.handleAi();
+        List<Command> commands = new ArrayList<>(controller.getCommands());
+        commands.addAll(aiController.getCommands());
+        commands.forEach(Command::execute);
         level.update(Gdx.graphics.getDeltaTime());
         graphics.render();
     }
