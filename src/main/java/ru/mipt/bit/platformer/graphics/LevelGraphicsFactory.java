@@ -21,13 +21,13 @@ public class LevelGraphicsFactory {
         this.treeTexturePath = treeTexturePath;
     }
 
-    public GameGraphics create(Level level) {
+    public GameGraphics create(Level level, HealthBars healthBars) {
         TiledMap levelMap = new TmxMapLoader().load(levelMapPath);
         TiledMapTileLayer groundLayer = getSingleLayer(levelMap);
         TileMovement tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
         ObjectGraphicsFactory objectGraphicsFactory = new ObjectGraphicsFactory(
-                tileMovement, groundLayer, tankTexturePath, treeTexturePath);
+                tileMovement, groundLayer, tankTexturePath, treeTexturePath, healthBars);
         GameGraphics graphics = new GameGraphics(levelMap, level, objectGraphicsFactory);
         level.subscribe(graphics);
         return graphics;

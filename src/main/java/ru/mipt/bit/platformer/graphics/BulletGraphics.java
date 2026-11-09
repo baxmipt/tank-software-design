@@ -8,7 +8,7 @@ import ru.mipt.bit.platformer.model.Bullet;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
-public class BulletGraphics extends ObjectGraphics {
+public class BulletGraphics extends TexturedObjectGraphics {
 
     private final Bullet bullet;
     private final TiledMapTileLayer groundLayer;

@@ -15,6 +15,7 @@ public class Tank implements GameObject {
     private static final float SHOT_INTERVAL = 0.4f;
 
     private final float movementDuration;
+    private final int initialHealth;
     private Direction direction;
     private int health;
     private float shotCooldown;
@@ -31,6 +32,7 @@ public class Tank implements GameObject {
     public Tank(GridPoint2 coordinates, Direction direction, float movementDuration, int health) {
         this.direction = direction;
         this.health = health;
+        this.initialHealth = health;
         this.coordinates = new GridPoint2(coordinates);
         this.destinationCoordinates = new GridPoint2(coordinates);
         this.rotation = direction.getRotation();
@@ -71,6 +73,10 @@ public class Tank implements GameObject {
 
     public int getHealth() {
         return health;
+    }
+
+    public int getInitialHealth() {
+        return initialHealth;
     }
 
     @Override

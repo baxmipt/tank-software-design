@@ -14,4 +14,9 @@ public class GdxKeyboard implements Keyboard {
     public boolean isPressed(int key) {
         return input.isKeyPressed(key);
     }
+
+    @Override
+    public boolean isJustPressed(int key) {
+        return input.isKeyJustPressed(key);
+    }
 }
