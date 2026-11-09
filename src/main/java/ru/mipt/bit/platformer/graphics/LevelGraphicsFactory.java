@@ -24,6 +24,10 @@ public class LevelGraphicsFactory {
     public GameGraphics create(Level level, HealthBars healthBars) {
         TiledMap levelMap = new TmxMapLoader().load(levelMapPath);
         TiledMapTileLayer groundLayer = getSingleLayer(levelMap);
+        if (groundLayer.getWidth() != level.getWidth() || groundLayer.getHeight() != level.getHeight()) {
+            levelMap.dispose();
+            throw new IllegalArgumentException("Level size does not match map size");
+        }
         TileMovement tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
         ObjectGraphicsFactory objectGraphicsFactory = new ObjectGraphicsFactory(

@@ -112,4 +112,30 @@ class LevelTest {
         assertEquals(List.of(aiTank), level.getAiTanks());
         assertEquals(List.of(tree), level.getTrees());
     }
+
+    @Test
+    void shouldBlockTankWithAnyGameObject() {
+        GameObject obstacle = new GameObject() {
+            @Override
+            public void update(float deltaTime, Level level) {
+            }
+
+            @Override
+            public boolean occupies(GridPoint2 tile) {
+                return tile.equals(new GridPoint2(2, 1));
+            }
+        };
+        Level levelWithObstacle = new Level(5, 5, tank, List.of(), List.of(obstacle));
+
+        levelWithObstacle.move(tank, Direction.RIGHT);
+        levelWithObstacle.update(MOVEMENT_DURATION);
+
+        assertEquals(new GridPoint2(1, 1), tank.getCoordinates());
+    }
+
+    @Test
+    void shouldKeepLevelDimensions() {
+        assertEquals(5, level.getWidth());
+        assertEquals(5, level.getHeight());
+    }
 }

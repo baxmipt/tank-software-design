@@ -73,6 +73,8 @@ class FileLevelFactoryTest {
 
         assertEquals(new GridPoint2(5, 1), level.getPlayerTank().getCoordinates());
         assertEquals(15, level.getTrees().size());
+        assertEquals(10, level.getWidth());
+        assertEquals(6, level.getHeight());
     }
 
     @Test
