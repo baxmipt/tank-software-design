@@ -6,7 +6,7 @@ import ru.mipt.bit.platformer.model.Tree;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
-public class TreeGraphics extends ObjectGraphics {
+public class TreeGraphics extends TexturedObjectGraphics {
 
     public TreeGraphics(Tree tree, TiledMapTileLayer groundLayer, String texturePath) {
         super(texturePath);

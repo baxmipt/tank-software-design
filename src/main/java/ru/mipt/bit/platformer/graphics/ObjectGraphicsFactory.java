@@ -13,18 +13,21 @@ public class ObjectGraphicsFactory {
     private final TiledMapTileLayer groundLayer;
     private final String tankTexturePath;
     private final String treeTexturePath;
+    private final HealthBars healthBars;
 
     public ObjectGraphicsFactory(TileMovement tileMovement, TiledMapTileLayer groundLayer,
-                                 String tankTexturePath, String treeTexturePath) {
+                                 String tankTexturePath, String treeTexturePath, HealthBars healthBars) {
         this.tileMovement = tileMovement;
         this.groundLayer = groundLayer;
         this.tankTexturePath = tankTexturePath;
         this.treeTexturePath = treeTexturePath;
+        this.healthBars = healthBars;
     }
 
     public ObjectGraphics create(GameObject object) {
         if (object instanceof Tank tank) {
-            return new TankGraphics(tank, tileMovement, tankTexturePath);
+            TankGraphics graphics = new TankGraphics(tank, tileMovement, tankTexturePath);
+            return new HealthBarGraphics(graphics, tank, healthBars);
         }
         if (object instanceof Tree tree) {
             return new TreeGraphics(tree, groundLayer, treeTexturePath);

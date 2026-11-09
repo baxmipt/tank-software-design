@@ -13,13 +13,14 @@ public class Level {
     private final List<GameObject> objects = new ArrayList<>();
     private final List<LevelListener> listeners = new ArrayList<>();
 
-    public Level(int width, int height, Tank playerTank, List<Tank> aiTanks, List<Tree> trees) {
+    public Level(int width, int height, Tank playerTank, List<Tank> aiTanks,
+                 List<? extends GameObject> obstacles) {
         this.width = width;
         this.height = height;
         this.playerTank = playerTank;
         objects.add(playerTank);
         objects.addAll(aiTanks);
-        objects.addAll(trees);
+        objects.addAll(obstacles);
     }
 
     public void move(Tank tank, Direction direction) {
@@ -90,6 +91,14 @@ public class Level {
 
     public Tank getPlayerTank() {
         return playerTank;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public List<Tank> getAiTanks() {

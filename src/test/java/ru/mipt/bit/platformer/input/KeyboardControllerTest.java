@@ -54,6 +54,26 @@ class KeyboardControllerTest {
         assertEquals(List.of("move"), executed);
     }
 
+    @Test
+    void shouldExecuteCommandBoundToJustPressedKey() {
+        KeyboardController controller = new KeyboardController(new Keyboard() {
+            @Override
+            public boolean isPressed(int key) {
+                return false;
+            }
+
+            @Override
+            public boolean isJustPressed(int key) {
+                return key == Keys.L;
+            }
+        });
+        controller.bindOnJustPress(command("toggle"), Keys.L);
+
+        controller.handleInput();
+
+        assertEquals(List.of("toggle"), executed);
+    }
+
     private Command command(String name) {
         return () -> executed.add(name);
     }

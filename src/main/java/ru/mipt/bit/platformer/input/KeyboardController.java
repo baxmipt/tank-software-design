@@ -8,6 +8,7 @@ public class KeyboardController {
 
     private final Keyboard keyboard;
     private final Map<Integer, Command> commands = new LinkedHashMap<>();
+    private final Map<Integer, Command> justPressedCommands = new LinkedHashMap<>();
 
     public KeyboardController(Keyboard keyboard) {
         this.keyboard = keyboard;
@@ -19,13 +20,22 @@ public class KeyboardController {
         }
     }
 
+    public void bindOnJustPress(Command command, int... keys) {
+        for (int key : keys) {
+            justPressedCommands.put(key, command);
+        }
+    }
+
     public void handleInput() {
         getCommands().forEach(Command::execute);
     }
 
     public List<Command> getCommands() {
-        return commands.entrySet().stream()
-                .filter(binding -> keyboard.isPressed(binding.getKey()))
-                .map(Map.Entry::getValue).distinct().toList();
+        return java.util.stream.Stream.concat(
+                        commands.entrySet().stream().filter(binding -> keyboard.isPressed(binding.getKey())),
+                        justPressedCommands.entrySet().stream().filter(binding -> keyboard.isJustPressed(binding.getKey())))
+                .map(Map.Entry::getValue)
+                .distinct()
+                .toList();
     }
 }

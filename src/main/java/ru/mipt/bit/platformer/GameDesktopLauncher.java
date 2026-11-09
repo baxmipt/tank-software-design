@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.ai.AiController;
 import ru.mipt.bit.platformer.ai.RandomMovementStrategy;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
+import ru.mipt.bit.platformer.graphics.HealthBars;
 import ru.mipt.bit.platformer.graphics.LevelGraphicsFactory;
 import ru.mipt.bit.platformer.input.Command;
 import ru.mipt.bit.platformer.input.GdxKeyboard;
@@ -37,6 +38,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private final LevelFactory levelFactory;
     private final Random random = new Random();
+    private final HealthBars healthBars = new HealthBars();
 
     private Level level;
     private KeyboardController controller;
@@ -50,11 +52,11 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void create() {
         level = levelFactory.create();
-        controller = new PlayerControls(level).createController(new GdxKeyboard(Gdx.input));
+        controller = new PlayerControls(level, healthBars).createController(new GdxKeyboard(Gdx.input));
         aiController = new AiController(level.getAiTanks().stream()
                 .map(tank -> new RandomMovementStrategy(level, tank, random))
                 .toList());
-        graphics = new LevelGraphicsFactory(LEVEL_MAP_PATH, TANK_TEXTURE_PATH, TREE_TEXTURE_PATH).create(level);
+        graphics = new LevelGraphicsFactory(LEVEL_MAP_PATH, TANK_TEXTURE_PATH, TREE_TEXTURE_PATH).create(level, healthBars);
     }
 
     @Override

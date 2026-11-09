@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-public class TankGraphics extends ObjectGraphics {
+public class TankGraphics extends TexturedObjectGraphics {
 
     private final Tank tank;
     private final TileMovement tileMovement;
@@ -20,5 +20,17 @@ public class TankGraphics extends ObjectGraphics {
         tileMovement.moveRectangleBetweenTileCenters(
                 rectangle, tank.getCoordinates(), tank.getDestinationCoordinates(), tank.getMovementProgress());
         draw(batch, tank.getRotation());
+    }
+
+    public float getTop() {
+        return rectangle.y + rectangle.height;
+    }
+
+    public float getLeft() {
+        return rectangle.x;
+    }
+
+    public float getWidth() {
+        return rectangle.width;
     }
 }
