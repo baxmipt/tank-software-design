@@ -105,4 +105,28 @@ class TankTest {
         assertFalse(tank.occupies(new GridPoint2(1, 1)));
         assertTrue(tank.occupies(new GridPoint2(1, 2)));
     }
+
+    @Test
+    void shouldMoveTwiceAsSlowInMediumState() {
+        Tank damagedTank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, MOVEMENT_DURATION, 100);
+        damagedTank.hit(30, null);
+
+        damagedTank.move(Direction.UP, emptyField);
+        damagedTank.update(MOVEMENT_DURATION);
+
+        assertTrue(damagedTank.isMoving());
+        assertEquals(0.5f, damagedTank.getMovementProgress());
+    }
+
+    @Test
+    void shouldMoveThreeTimesAsSlowInHeavyState() {
+        Tank damagedTank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, MOVEMENT_DURATION, 100);
+        damagedTank.hit(86, null);
+
+        damagedTank.move(Direction.UP, emptyField);
+        damagedTank.update(MOVEMENT_DURATION);
+
+        assertTrue(damagedTank.isMoving());
+        assertEquals(1f / 3f, damagedTank.getMovementProgress(), 0.0001f);
+    }
 }

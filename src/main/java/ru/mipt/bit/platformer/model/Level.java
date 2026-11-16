@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Domain aggregate that coordinates game objects.
+ */
 public class Level {
 
     private final int width;

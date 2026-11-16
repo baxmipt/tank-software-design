@@ -22,15 +22,4 @@ public class TankGraphics extends TexturedObjectGraphics {
         draw(batch, tank.getRotation());
     }
 
-    public float getTop() {
-        return rectangle.y + rectangle.height;
-    }
-
-    public float getLeft() {
-        return rectangle.x;
-    }
-
-    public float getWidth() {
-        return rectangle.width;
-    }
 }

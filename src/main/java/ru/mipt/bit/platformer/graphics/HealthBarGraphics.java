@@ -10,12 +10,12 @@ public class HealthBarGraphics implements ObjectGraphics {
     private static final float HEIGHT = 6f;
     private static final float MARGIN = 4f;
 
-    private final TankGraphics decorated;
+    private final ObjectGraphics decorated;
     private final Tank tank;
     private final HealthBars healthBars;
     private final Texture texture;
 
-    public HealthBarGraphics(TankGraphics decorated, Tank tank, HealthBars healthBars) {
+    public HealthBarGraphics(ObjectGraphics decorated, Tank tank, HealthBars healthBars) {
         this.decorated = decorated;
         this.tank = tank;
         this.healthBars = healthBars;
@@ -40,6 +40,21 @@ public class HealthBarGraphics implements ObjectGraphics {
     public void dispose() {
         decorated.dispose();
         texture.dispose();
+    }
+
+    @Override
+    public float getTop() {
+        return decorated.getTop();
+    }
+
+    @Override
+    public float getLeft() {
+        return decorated.getLeft();
+    }
+
+    @Override
+    public float getWidth() {
+        return decorated.getWidth();
     }
 
     private Texture createTexture() {

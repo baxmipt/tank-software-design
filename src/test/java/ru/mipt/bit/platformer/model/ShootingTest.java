@@ -195,6 +195,17 @@ class ShootingTest {
     }
 
     @Test
+    void shouldNotShootInHeavyState() {
+        Tank damagedTank = new Tank(new GridPoint2(0, 0), Direction.RIGHT, 0.4f, 100);
+        damagedTank.hit(86, null);
+        Level level = new Level(8, 3, damagedTank, List.of(), List.of());
+
+        level.shoot(damagedTank);
+
+        assertTrue(level.getBullets().isEmpty());
+    }
+
+    @Test
     void shouldNotifyAboutInitialObjectsAndChanges() {
         Tree tree = new Tree(new GridPoint2(4, 1));
         Level level = createLevel(null, List.of(tree));

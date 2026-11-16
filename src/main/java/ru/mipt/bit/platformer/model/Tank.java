@@ -1,10 +1,17 @@
 package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.model.state.HeavyTankState;
+import ru.mipt.bit.platformer.model.state.LightTankState;
+import ru.mipt.bit.platformer.model.state.MediumTankState;
+import ru.mipt.bit.platformer.model.state.TankState;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
+/**
+ * Domain entity and State context for tank behaviour.
+ */
 public class Tank implements GameObject {
 
     private static final float MOVEMENT_COMPLETED = 1f;
@@ -17,6 +24,7 @@ public class Tank implements GameObject {
     private final float movementDuration;
     private final int initialHealth;
     private Direction direction;
+    private TankState state;
     private int health;
     private float shotCooldown;
 
@@ -37,6 +45,7 @@ public class Tank implements GameObject {
         this.destinationCoordinates = new GridPoint2(coordinates);
         this.rotation = direction.getRotation();
         this.movementDuration = movementDuration;
+        state = createState();
     }
 
     public void move(Direction direction, CollisionDetector collisionDetector) {
@@ -53,10 +62,10 @@ public class Tank implements GameObject {
     }
 
     public void shoot(Level level) {
-        if (shotCooldown > 0f) {
+        if (shotCooldown > 0f || !state.canShoot()) {
             return;
         }
-        shotCooldown = SHOT_INTERVAL;
+        shotCooldown = state.shotInterval(SHOT_INTERVAL);
         Bullet bullet = new Bullet(direction.nextCoordinates(coordinates), direction,
                 BULLET_MOVEMENT_DURATION, BULLET_DAMAGE, this);
         level.add(bullet);
@@ -66,6 +75,7 @@ public class Tank implements GameObject {
     @Override
     public void hit(int damage, Level level) {
         health -= damage;
+        state = createState();
         if (health < 0) {
             level.remove(this);
         }
@@ -86,7 +96,8 @@ public class Tank implements GameObject {
 
     public void update(float deltaTime) {
         shotCooldown = Math.max(0f, shotCooldown - deltaTime);
-        movementProgress = clamp(movementProgress + deltaTime / movementDuration, 0f, MOVEMENT_COMPLETED);
+        movementProgress = clamp(movementProgress + deltaTime / state.movementDuration(movementDuration),
+                0f, MOVEMENT_COMPLETED);
         if (!isMoving()) {
             coordinates.set(destinationCoordinates);
         }
@@ -115,5 +126,16 @@ public class Tank implements GameObject {
 
     public float getRotation() {
         return rotation;
+    }
+
+    private TankState createState() {
+        float healthPercentage = (float) health / initialHealth;
+        if (healthPercentage > 0.7f) {
+            return new LightTankState();
+        }
+        if (healthPercentage >= 0.15f) {
+            return new MediumTankState();
+        }
+        return new HeavyTankState();
     }
 }
