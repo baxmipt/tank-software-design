@@ -9,4 +9,10 @@ import com.badlogic.gdx.utils.Disposable;
 public interface ObjectGraphics extends Disposable {
 
     void render(Batch batch);
+
+    float getTop();
+
+    float getLeft();
+
+    float getWidth();
 }

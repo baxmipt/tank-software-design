@@ -30,6 +30,21 @@ public abstract class TexturedObjectGraphics implements ObjectGraphics {
     }
 
     @Override
+    public float getTop() {
+        return rectangle.y + rectangle.height;
+    }
+
+    @Override
+    public float getLeft() {
+        return rectangle.x;
+    }
+
+    @Override
+    public float getWidth() {
+        return rectangle.width;
+    }
+
+    @Override
     public void dispose() {
         texture.dispose();
     }
