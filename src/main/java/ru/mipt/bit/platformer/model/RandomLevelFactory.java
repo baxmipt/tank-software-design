@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Application adapter that creates a random level through the LevelFactory port.
+ */
 public class RandomLevelFactory implements LevelFactory {
 
     private final int width;

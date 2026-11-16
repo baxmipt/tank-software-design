@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Infrastructure composition root that connects application, domain and libGDX adapters.
+ */
 public class GameDesktopLauncher implements ApplicationListener {
 
     private static final int WINDOW_WIDTH = 1280;

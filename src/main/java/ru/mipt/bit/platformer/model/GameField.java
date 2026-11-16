@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.List;
 
+/**
+ * Domain adapter that provides collision checks through the CollisionDetector port.
+ */
 public class GameField implements CollisionDetector {
 
     private final int width;

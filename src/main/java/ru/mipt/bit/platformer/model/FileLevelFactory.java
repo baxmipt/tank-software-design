@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Infrastructure adapter that reads a level through the LevelFactory port.
+ */
 public class FileLevelFactory implements LevelFactory {
 
     private static final char TREE = 'T';
